@@ -20,6 +20,7 @@ var app = express();
 var keywordJSON = JSON.parse(process.env.KEYWORDS);
 var keywords =[];
 var channelIds = [];
+var alerts = [];
 
 
 for (var key of keywordJSON){
@@ -27,6 +28,7 @@ for (var key of keywordJSON){
   //console.log(key.trigger);
     keywords.push(key.trigger);
     channelIds[key.trigger] = key.channelId;
+    alerts[key.trigger] = key.alert
 }
  console.log("Json:", keywordJSON[0].trigger)
  console.log("channelIds:", channelIds.payments)
@@ -92,10 +94,11 @@ slackEvents.on('message', (event)=> {
   for (attachment of attachments){
     //console.log(attachment.pretext);
     for(var keyword of keywords){
-      console.log(keyword);
+      //console.log(keyword);
       if(attachment.pretext == keyword){
-        console.log(channelIds[keyword]);
-        rtm.sendMessage(`<#${event.channel}>`, channelIds[keyword]);
+        //console.log(channelIds[keyword]);
+        console.log(attachment)
+        rtm.sendMessage(`${alerts[keyword]} in <#${event.channel}>\n>${attachment.pretext}`, channelIds[keyword]);
       }
     }
   }
